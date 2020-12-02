@@ -26,6 +26,23 @@ pub trait FullDuplex<Word> {
     fn send(&mut self, word: Word) -> nb::Result<(), Self::Error>;
 }
 
+/// Simplex (send-only, master mode)
+///
+/// # Notes
+///
+/// - This interface does not specify slave select management. It may be performed by your hardware
+/// or you may need to manage the slave select yourself.
+///
+/// - Some SPIs can work with 8-bit *and* 16-bit words. You can overload this trait with different
+/// `Word` types to allow operation in both modes.
+pub trait Simplex<Word> {
+    /// An enumeration of SPI errors
+    type Error;
+
+    /// Sends a word to the slave
+    fn try_send(&mut self, word: Word) -> nb::Result<(), Self::Error>;
+}
+
 /// Clock polarity
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Polarity {
